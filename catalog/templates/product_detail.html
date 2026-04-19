@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ product.name }} | Skystore{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary mb-4">← Назад к каталогу</a>
+
+    <div class="row">
+        <div class="col-md-5">
+            <div class="card shadow-sm">
+                <div class="card-body text-center p-4">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                    {% else %}
+                        <span style="font-size: 150px;"></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-7">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h1 class="card-title h2 mb-3">{{ product.name }}</h1>
+
+                    <p class="mb-2">
+                        <strong>Категория:</strong>
+                        <span class="badge bg-primary">{{ product.category.name }}</span>
+                    </p>
+
+                    <div class="mb-4">
+                        <span class="display-6 fw-bold text-primary">{{ product.price }} ₽</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Полное описание</h5>
+                        <p class="text-muted">{{ product.description|linebreaks }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5>Характеристики</h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <span class="fw-bold">Артикул:</span>
+                                <span class="text-muted">#{{ product.id|stringformat:"06d" }}</span>
+                            </li>
+                            <li class="mb-2">
+                                <span class="fw-bold">Дата добавления:</span>
+                                <span class="text-muted">{{ product.created_at|date:"d.m.Y" }}</span>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <button class="btn btn-primary btn-lg w-100">Купить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

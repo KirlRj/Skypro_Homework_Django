@@ -26,8 +26,7 @@
                     {% endif %}
 
                     <h1 class="card-title pricing-card-title">{{ product.price }} ₽</h1>
-
-                    <p class="text-muted small">{{ product.short_description }}</p>
+                    <p class="text-muted small">{{ product.description|truncatechars:100 }}</p>
 
                     <ul class="list-unstyled mt-3 mb-4 text-start m-3">
                         <li>Категория: {{ product.category.name }}</li>

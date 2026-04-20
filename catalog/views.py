@@ -4,11 +4,6 @@ from catalog.models import Product
 
 def home(request):
     products = Product.objects.select_related('category').all()
-    for product in products:
-        if len(product.description) < 100:
-            product.short_description = product.description[:100] + '...'
-        else:
-            product.short_description = product.description
     context = {'products': products,}
     return render(request, "home.html",context)
 

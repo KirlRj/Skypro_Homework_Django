@@ -14,6 +14,14 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'description', 'image', 'category', 'price', 'created_at', 'updated_at']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+        self.fields['name'].widget.attrs['placeholder'] = 'Название продукта'
+        self.fields['description'].widget.attrs['placeholder'] = 'Описание продукта'
+        self.fields['price'].widget.attrs['placeholder'] = 'Цена в рублях'
+
     def _check_forbidden_words(self, value, field_label):
         value_lower = value.lower()
         for word in FORBIDDEN_WORDS:

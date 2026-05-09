@@ -17,7 +17,10 @@ class ProductForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field_name, field in self.fields.items():
-            field.widget.attrs['class'] = 'form-control'
+            if isinstance(field.widget, forms.CheckboxInput):
+                field.widget.attrs['class'] = 'form-check-input'
+            else:
+                field.widget.attrs['class'] = 'form-control'
         self.fields['name'].widget.attrs['placeholder'] = 'Название продукта'
         self.fields['description'].widget.attrs['placeholder'] = 'Описание продукта'
         self.fields['price'].widget.attrs['placeholder'] = 'Цена в рублях'

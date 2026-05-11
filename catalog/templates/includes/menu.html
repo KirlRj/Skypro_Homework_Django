@@ -12,4 +12,17 @@
             Контакты
         </a>
     </nav>
+    <div class="ms-auto">
+        {% if user.is_authenticated %}
+            <span class="ms-2 text-muted">{{ user.email }}</span>
+            <form method="post" action="{% url 'users:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-outline-danger ms-2">Выйти</button>
+            </form>
+        {% else %}
+            <a href="{% url 'users:register' %}" class="btn btn-outline-success ms-2">Регистрация</a>
+            <a href="{% url 'users:login' %}" class="btn btn-outline-primary ms-2">Войти</a>
+        {% endif %}
+    </div>
+</div>
 </div>

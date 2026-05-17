@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import permission_required
 
 from catalog.models import Product
 from catalog.forms import ProductForm
@@ -34,11 +35,20 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
         context["title"] = "Добавить продукт"
         return context
 
+    def form_valid(self, form):
+        """Автоматическая привязка продукта к текущему пользователю"""
+        form.instance.owner = self.request.user
+        return super().form_valid(form)
 
-class ProductUpdateView(LoginRequiredMixin, UpdateView):
+
+class ProductUpdateView(LoginRequiredMixin,UserPassesTestMixin, UpdateView):
     model = Product
     form_class = ProductForm
     template_name = "product_form.html"
+
+    def test_func(self):
+        product = self.get_object()
+        return self.request.user == product.owner
 
     def get_success_url(self):
         return reverse_lazy("catalog:product_detail", kwargs={"pk": self.object.pk})
@@ -49,10 +59,26 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
         return context
 
 
-class ProductDeleteView(LoginRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Product
     template_name = "product_confirm_delete.html"
     success_url = reverse_lazy("catalog:home")
+    permission_required = "catalog.delete_product"
+
+    def test_func(self):
+        # владелец или модератор может удалять
+        product = self.get_object()
+        return self.request.user == product.owner or self.request.user.has_perm('catalog.delete_product')
+
+
+@permission_required('catalog.can_unpublish_product')
+def product_unpublish(request, pk):
+    """Снятие продукта с публикации"""
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == 'POST':
+        product.is_published = False
+        product.save()
+    return redirect('catalog:product_detail', pk=pk)
 
 
 class ContactsView(TemplateView):

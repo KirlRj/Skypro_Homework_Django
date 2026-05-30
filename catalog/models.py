@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.conf import settings
 # Create your models here.
 
 
@@ -23,6 +23,14 @@ class Product(models.Model):
     price = models.FloatField(verbose_name="Цена продукта")
     created_at = models.DateField(verbose_name="Дата создания")
     updated_at = models.DateField(verbose_name="Дата последнего изменения")
+    is_published = models.BooleanField(verbose_name="Опубликовано", default=False)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Владелец"
+    )
 
     def __str__(self):
         return f"{self.name}, {self.category}, {self.price}, {self.created_at}, {self.updated_at}"
@@ -30,3 +38,6 @@ class Product(models.Model):
     class Meta:
         verbose_name = "продукт"
         verbose_name_plural = "продукты"
+        permissions = [
+            ("can_unpublish_product", "Может отменять публикацию продукта"),
+        ]

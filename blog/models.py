@@ -11,7 +11,7 @@ class Blog(models.Model):
 
     class Meta:
         verbose_name = "Блог"
-        verbose_name_plural = "ББлоги"
+        verbose_name_plural = "Блоги"
 
     def __str__(self):
         return f"{self.title}, {self.created_at}, {self.is_published}, {self.views_count}"

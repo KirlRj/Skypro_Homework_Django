@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.decorators import permission_required
+from catalog.services import get_products_by_category
 
 from catalog.models import Product
 from catalog.forms import ProductForm
@@ -96,3 +97,12 @@ class ContactsView(TemplateView):
         context = self.get_context_data(**kwargs)
         context["message"] = "Спасибо за обращение! Мы свяжемся с вами."
         return self.render_to_response(context)
+
+class ProductsByCategory(ListView):
+    """Класс вывода продуктов категории"""
+    model = Product
+    template_name = "products_by_category.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        return get_products_by_category(self.kwargs["category_id"])

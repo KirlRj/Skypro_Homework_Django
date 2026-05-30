@@ -3,7 +3,7 @@ from django.core.cache import cache
 
 def get_products_by_category(category_id):
     """Возвращает список продуктов в указанной категории с кэшированием"""
-    cache_key = f'product_by_category_{category_id}'
+    cache_key = f'category_{category_id}'
 
     products = cache.get(cache_key)
 
